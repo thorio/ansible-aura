@@ -4,7 +4,7 @@ Basic module that implements installations and upgrades using [Aura](https://git
 
 The following functionalities are implemented:
 
- - installation of a package 
+ - installation of a package
  - upgrade of all AUR packages
 
 To install this module, you can either:

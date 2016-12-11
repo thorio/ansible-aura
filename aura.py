@@ -4,7 +4,7 @@
 import itertools
 import re
 
-from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.basic import *
 
 DOCUMENTATION = '''
 ---
@@ -35,7 +35,7 @@ options:
 
     upgrade:
         description:
-            - pgrade all AUR packages.
+            - Upgrade all AUR packages.
         required: false
         default: no
         choices: ['yes', 'no']
@@ -126,6 +126,7 @@ class Aura(object):
         self._module = module
         self._aura_path = aura_path
 
+
     def upgrade(self):
         """Upgrade all AUR packages on the system."""
         packages_to_upgrade = self._packages_to_upgrade()
@@ -153,7 +154,6 @@ class Aura(object):
                 changed=False,
                 msg="No AURA packages would have been upgraded")
 
-
     def _packages_to_upgrade(self):
         """
         Returns the packages that can be upgraded.
@@ -172,7 +172,6 @@ class Aura(object):
         else:
             packages = []
         return packages
-
 
 
     def install_packages(self, packages, state, delmakedeps):
@@ -207,7 +206,6 @@ class Aura(object):
 
         self._module.exit_json(changed=False,
                                msg="All packages already installed.")
-
 
     def check_packages(self, packages, state):
         num_changed = len([package
@@ -249,6 +247,7 @@ class Aura(object):
         # if state is not latest (must be present), then the package exists
         # but we don't need to upgrade it.
         return state == 'latest' and local_version != aur_version
+
 
     def _query_installation_info(self, name):
         """Queries the local installation.
