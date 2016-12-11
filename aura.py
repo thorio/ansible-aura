@@ -141,54 +141,6 @@ def query_aura_info(module, aura_path, name):
         return extract_info(stdout)
     return {}
 
-
-def query_package(module, aura_path, name, state="present"):
-    """Query the package status in both the local system and the AUR.
-
-    Returns:
-     - a boolean to indicate if the package is installed
-     - a boolean to indicate if the package is up-to-date
-     - a boolean to indicate whether online information was available"""
-
-    local_info = query_installation_info(module, aura_path, name)
-    aura_info = query_aura_info(module, aura_path, name)
-
-    installed = local_info != dict()
-    online_info_available = aura_info != dict()
-
-    if online_info_available:
-        if not installed:
-            uptodate = False
-
-    if installed:
-        # Not installed
-        return dict(installed=False,
-                    uptodate=False,
-                    online=(aura_info != dict()))
-
-    if state == "present":
-        lcmd = "%s -Qi %s" % (aura_path, name)
-        lrc, lstdout, lstderr = module.run_command(lcmd, check_rc=False)
-        if lrc != 0:
-            # package is not installed locally
-            return False, False, False
-
-        # get the version installed locally (if any)
-        lversion = get_version(lstdout)
-
-        rcmd = "%s -Ai %s" % (aura_path, name)
-        rrc, rstdout, rstderr = module.run_command(rcmd, check_rc=False)
-        # get the version in the repository
-        rversion = get_version(rstdout)
-
-        if rrc == 0:
-            # Return True to indicate that the package is installed locally, and the result of the version number comparison
-            # to determine if the package is up-to-date.
-            return True, (lversion == rversion), False
-
-        # package is installed but cannot fetch remote Version. Last True stands for the error
-        return True, True, True
-
 def needs_installation(module, aura_path, name, state):
     '''Determines whether we need to install the package
     :param ansible.module_utils.basic.AnsibleModule: Ansible Module
