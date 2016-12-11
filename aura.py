@@ -289,21 +289,20 @@ def install_packages(module, aura_path, state, delmakedeps, packages):
 
 
 def check_packages(module, aura_path, packages, state):
-    would_be_changed = []
-    for package in packages:
-        installed, updated, unknown = query_package(module, aura_path, package)
-        if ((state in ["present", "latest"] and not installed) or
-                (state == "absent" and installed) or
-                (state == "latest" and not updated)):
-            would_be_changed.append(package)
-    if would_be_changed:
-        if state == "absent":
-            state = "removed"
-        module.exit_json(changed=True, msg="%s package(s) would be %s" % (
-            len(would_be_changed), state))
+    num_changed = len([package
+                       for package in packages
+                       if needs_installation(module,
+                                             aura_path,
+                                             package,
+                                             state)])
+    if num_changed:
+        module.exit_json(
+            changed=True,
+            msg="%s packages would be changed to %s" % (num_changed, state))
     else:
-        module.exit_json(changed=False, msg="package(s) already %s" % state)
-
+        module.exit_json(
+            changed=False,
+            msg='%s packages are already %s' % (num_changed, state))
 
 def get_version(output):
     """
