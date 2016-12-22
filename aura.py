@@ -4,7 +4,7 @@
 import itertools
 import re
 
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule
 
 DOCUMENTATION = '''
 ---
@@ -31,7 +31,7 @@ options:
             - Desired state of the package. Use I(pacman) to remove packages.
         required: false
         default: 'present'
-        choices: ['present', "latest"]
+        choices: ['present', 'latest']
 
     upgrade:
         description:
@@ -66,25 +66,11 @@ ANSI_ESCAPE_PATTERN = re.compile(r'(\x9B|\x1B\[)[0-?]*[ -\/]*[@-~]')
 
 def main():
     module = AnsibleModule(
-        argument_spec={
-            'name': {
-                'aliases': ['pkg', 'package'],
-                'type': 'list'
-            },
-            'state': {
-                'default': 'present',
-                'choices': ['present', 'installed', 'latest']
-            },
-            'upgrade': {
-                'aliases': ['sysupgrade'],
-                'default': False,
-                'type': 'bool'
-            },
-            'delmakedeps': {
-                'default': False,
-                'type': 'bool'
-            }
-        },
+        argument_spec   = dict(
+            name        = dict(aliases=['pkg', 'package'], type='list'),
+            state       = dict(default='present', choices=['present', 'installed', 'latest']),
+            upgrade     = dict(aliases=['sysupgrade'], default=False, type='bool'),
+            delmakedeps = dict(default=False, type='bool')),
         required_one_of=[['name', 'upgrade']],
         supports_check_mode=True)
 
@@ -147,7 +133,7 @@ class Aura(object):
         if packages_to_upgrade:
             self._module.exit_json(
                 changed=True,
-                msg=("%s AUR package(s) would have beeen upgraded" %
+                msg=("%d AUR package(s) would have beeen upgraded" %
                      len(packages_to_upgrade)))
         else:
             self._module.exit_json(
@@ -161,7 +147,7 @@ class Aura(object):
         """
         dry_upgrade_command = "%s -A --sysupgrade --dryrun" % self._aura_path
         rc, stdout, _ = self._module.run_command(dry_upgrade_command,
-                                                      check_rc=False)
+                                                 check_rc=False)
         if rc == 0:
             colourless_stdout = re.sub(ANSI_ESCAPE_PATTERN, '', stdout)
             data = colourless_stdout.split('\n')
