@@ -215,24 +215,18 @@ class Aura(object):
         :rtype: bool
         """
 
-        # First check that the package exists on the AUR
-        aur_info = self._query_aura_info(name)
-        if not aur_info:
-            self._module.fail_json(msg="No package '%s' found on AUR." % name)
-
         local_info = self._query_installation_info(name)
         if not local_info:
-            # If the package does not exist locally, then it needs installing
-            # regardless of state
             return True
+        elif state == 'present':
+            return False
+        else:
+            aur_info = self._query_aura_info(name)
+            if not aur_info:
+                self._module.fail_json(
+                    msg="No package '%s' found on AUR." % name)
 
-        local_version = local_info['Version']
-        aur_version = aur_info['Version']
-
-        # if state is latest, check that the versions match, otherwise
-        # if state is not latest (must be present), then the package exists
-        # but we don't need to upgrade it.
-        return state == 'latest' and local_version != aur_version
+        return local_info['Version'] != aur_info['Version']
 
 
     def _query_installation_info(self, name):
