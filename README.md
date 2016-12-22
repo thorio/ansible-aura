@@ -2,6 +2,13 @@
 
 Basic module that implements installations and upgrades using [Aura](https://github.com/aurapm/aura), an AUR helper for ArchLinux.
 
+It is recommended to add this to `squash_actions` in your `ansible.cfg`, so that the module is called once with all packages given to it using `with_items`
+
+```
+[default]
+squash_actions = aura
+```
+
 The following functionalities are implemented:
 
  - installation of a package
