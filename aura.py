@@ -171,7 +171,7 @@ class Aura(object):
                                for package in packages
                                if self._needs_installation(package, state))
         for package in packages_to_install:
-            params = "--aursync %s" % package
+            params = "--aursync --builduser=nobody %s" % package
 
             if delmakedeps:
                 params += " --delmakedeps"
