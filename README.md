@@ -16,5 +16,5 @@ The following functionalities are implemented:
 
 To install this module, you can either:
 
- - download `aura.py` and place it in the `library` folder of your top-level playbook.
- - clone this as a submodule, adding the path to the `library` value your `ansible.cfg`.
+ - download [`aura.py`](library/aura.py) and place it in the `library` folder of your top-level playbook.
+ - clone this as a submodule, adding the path (e.g. `aura/library`) to the `library` value your `ansible.cfg`.
