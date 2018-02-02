@@ -1,8 +1,7 @@
 language: python
 python:
   - "3.6"
-jobs:
-  - stage: Run unit tests
-    script:
-      - pip install tox
-      - tox
+install:
+  - pip install tox
+script:
+  - tox
