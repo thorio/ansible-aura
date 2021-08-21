@@ -207,7 +207,7 @@ class Aura(object):
             if delmakedeps:
                 params += " --delmakedeps"
 
-            command = "%s %s --noconfirm" % (self._aura_path, params)
+            command = "/usr/bin/sudo %s %s --noconfirm" % (self._aura_path, params)
             rc, _, _ = self._module.run_command(command, check_rc=False)
 
             if rc != 0:
