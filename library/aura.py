@@ -208,11 +208,11 @@ class Aura(object):
                 params += " --delmakedeps"
 
             command = "/usr/bin/sudo %s %s --noconfirm" % (self._aura_path, params)
-            rc, _, _ = self._module.run_command(command, check_rc=False)
+            rc, stdout, stderr = self._module.run_command(command, check_rc=False)
 
             if rc != 0:
                 self._module.fail_json(
-                    msg="Failed to install package '%s'." % package)
+                    msg="Failed to install package '%s'. rc=%d stdout=%s stderr=%s" % (package, rc, stdout, stderr))
 
             successful_installs += 1
 
