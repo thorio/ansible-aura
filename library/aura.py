@@ -270,7 +270,6 @@ class Aura(object):
         #   aura: Failure There was some failure.
         # See https://github.com/fosskers/aura/issues/790
         query_command = "/usr/bin/sudo %s --query --info %s" % (self._aura_path, name)
-        self._module.warn(f"Running {query_command}")
         rc, stdout, _ = self._module.run_command(query_command, check_rc=False)
         if rc == 0:
             return self._extract_info(stdout)
