@@ -315,9 +315,17 @@ class Aura(object):
         lines = colourless_info.split('\n')
         info_dict = {}
         for line in lines:
-            if line:
-                key, value = line.split(':', 1)
-                info_dict[key.strip()] = value.strip()
+            if not line:
+                continue
+
+            # continuation of previous key
+            if line.startswith(" "):
+                previous_key = list(info_dict)[-1]
+                info_dict[previous_key] += "\n" + line.strip()
+                continue
+
+            key, value = line.split(':', 1)
+            info_dict[key.strip()] = value.strip()
         return info_dict
 
 if __name__ == "__main__":
